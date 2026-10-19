@@ -11,6 +11,25 @@ foreach ($project in $projects) {
             if ($flutterProject) { & flutter pub get } else { & dart pub get }
             if ($LASTEXITCODE -ne 0) { throw "Dependency resolution failed: $project" }
         }
+        # The formatter reads the package language version from resolved metadata.
+        # A fresh checkout must resolve before formatting, just as local development does.
+        if (!(Test-Path -LiteralPath '.dart_tool/package_config.json')) {
+            throw "Package context missing: $project. Run validation without -SkipResolve first."
+        }
+        $formatFiles = @()
+        foreach ($sourceDirectory in @('lib','test')) {
+            if (Test-Path -LiteralPath $sourceDirectory) {
+                $formatFiles += Get-ChildItem -LiteralPath $sourceDirectory -Recurse -File -Filter '*.dart' |
+                    Where-Object { $_.Name -notmatch '\.(g|freezed)\.dart$' } |
+                    Select-Object -ExpandProperty FullName
+            }
+        }
+        # Scope avoids build/cache/vendor/native trees. Generated Dart is checked
+        # through its generator (for example test-tokens.ps1), not rewritten here.
+        if ($formatFiles.Count) {
+            & dart format --output=none --set-exit-if-changed @formatFiles
+            if ($LASTEXITCODE -ne 0) { throw "Formatting failed: $project" }
+        }
         if ($flutterProject) { & flutter analyze --fatal-infos } else { & dart analyze --fatal-infos }
         if ($LASTEXITCODE -ne 0) { throw "Analysis failed: $project" }
         if (Test-Path -LiteralPath test) {

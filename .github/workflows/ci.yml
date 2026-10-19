@@ -37,8 +37,7 @@ jobs:
           flutter-version: '3.47.7'
           channel: stable
           cache: true
-      - run: dart format --output=none --set-exit-if-changed packages apps/customer_app/lib apps/driver_app/lib apps/business_app/lib
-      - name: Resolve, analyze, and test all Dart packages and apps
+      - name: Resolve, check formatting, analyze, and test all Dart packages and apps
         shell: pwsh
         run: ./scripts/validate-flutter.ps1
   supabase-local:
