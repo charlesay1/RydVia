@@ -1,0 +1,11 @@
+name: rydvia_design_system
+description: Stable design-system entry point preserving the existing rydvia_ui implementation.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  rydvia_ui:
+    path: ../rydvia_ui

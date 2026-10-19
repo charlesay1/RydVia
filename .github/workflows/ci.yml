@@ -1,0 +1,55 @@
+name: Validate RydVia
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  web-and-database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:admin-http
+      - name: Token and native-structure checks
+        shell: pwsh
+        run: |
+          ./scripts/test-tokens.ps1
+          ./scripts/test-platforms.ps1
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: stable
+          cache: true
+      - run: dart format --output=none --set-exit-if-changed packages apps/customer_app/lib apps/driver_app/lib apps/business_app/lib
+      - name: Resolve, analyze, and test all Dart packages and apps
+        shell: pwsh
+        run: ./scripts/validate-flutter.ps1
+  supabase-local:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: supabase db reset --local
+      - run: supabase test db
+      - if: always()
+        run: supabase stop --no-backup

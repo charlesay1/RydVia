@@ -1,0 +1,23 @@
+name: rydvia_ui
+description: Shared RydVia design tokens, themes, and accessible components.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.35.0'
+dependencies:
+  flutter:
+    sdk: flutter
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: fonts/Manrope.ttf
+          weight: 400
+        - asset: fonts/Manrope.ttf
+          weight: 700
+        - asset: fonts/Manrope.ttf
+          weight: 800

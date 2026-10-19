@@ -1,0 +1,5 @@
+{
+  "name": "@rydvia/design-system", "version": "0.1.0", "private": true,
+  "exports": { "./theme": "./web/theme.tsx", "./font": "./web/font.ts", "./styles.css": "./web/styles.css" },
+  "peerDependencies": { "react": "^19.0.0" }
+}

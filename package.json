@@ -1,0 +1,36 @@
+{
+  "name": "rydvia",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*_web",
+    "packages/rydvia_design_system"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:admin-http": "node scripts/check-admin-http.mjs",
+    "supabase:audit": "node scripts/audit-live-supabase.mjs",
+    "build": "npm run build --workspaces --if-present",
+    "dev:admin": "npm run dev --workspace @rydvia/admin-web",
+    "dev:public": "npm run dev --workspace @rydvia/public-web"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
+    "@testing-library/jest-dom": "^6.9.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.0.0",
+    "jsdom": "^27.0.0",
+    "typescript": "~5.9.0",
+    "vitest": "^4.0.0"
+  }
+}

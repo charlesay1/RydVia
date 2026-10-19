@@ -1,0 +1,15 @@
+name: rydvia_business
+description: RydVia Business mobile application.
+version: 0.1.0+1
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  rydvia_auth:
+    path: ../../packages/rydvia_auth
+  rydvia_models:
+    path: ../../packages/rydvia_models
+flutter:
+  uses-material-design: true

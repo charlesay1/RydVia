@@ -1,0 +1,12 @@
+name: rydvia_api
+description: Backend-independent service repositories and Supabase data adapters.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+dependencies:
+  supabase_flutter: ^2.18.3
+  rydvia_models:
+    path: ../rydvia_models
+  rydvia_core:
+    path: ../rydvia_core

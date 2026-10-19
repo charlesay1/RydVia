@@ -1,0 +1,25 @@
+name: rydvia_auth
+description: Shared phone authentication, server-backed access, and onboarding UI.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.18.3
+  shared_preferences: ^2.5.0
+  flutter_secure_storage: ^10.0.0
+  rydvia_core:
+    path: ../rydvia_core
+  rydvia_models:
+    path: ../rydvia_models
+  rydvia_api:
+    path: ../rydvia_api
+  rydvia_logging:
+    path: ../rydvia_logging
+  rydvia_design_system:
+    path: ../rydvia_design_system
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

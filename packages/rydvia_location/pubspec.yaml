@@ -1,0 +1,6 @@
+name: rydvia_location
+description: Location permissions and map adapter contracts, without implicit collection.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: '>=3.8.0 <4.0.0'
