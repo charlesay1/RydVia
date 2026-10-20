@@ -26,6 +26,28 @@ describe('server-side admin authorization',()=>{
   });
 });
 describe('admin phone OTP boundary',()=>{
+  it('uses the same strict Ghana national/international contract as mobile',async()=>{
+    for (const value of ['0233123456','233123456','+233233123456']) {
+      expect(ghanaPhone(value)).toBe('+233233123456');
+    }
+    for (const value of ['0244163371','024 416 3371','24 416 3371','+233244163371','+233 24 416 3371','233244163371',' (024) 416-3371 ']) {
+      expect(ghanaPhone(value)).toBe('+233244163371');
+      const deps=otpDependencies();
+      const state=await requestCode(value,deps);
+      expect(deps.request).toHaveBeenCalledWith('+233244163371');
+      expect(state.phone).toBe('+233244163371');
+      await verifyCode(state.phone!,'123456',deps);
+      expect(deps.verify).toHaveBeenCalledWith('+233244163371','123456');
+    }
+    for (const value of ['', 'letters','0244','02441633711','+2330244163371','2330244163371','00233244163371','++233244163371','+233233244163371','+234244163371','0244.163371']) {
+      expect(ghanaPhone(value)).toBeNull();
+      const deps=otpDependencies();
+      await requestCode(value,deps);
+      await verifyCode(value,'123456',deps);
+      expect(deps.request).not.toHaveBeenCalled();
+      expect(deps.verify).not.toHaveBeenCalled();
+    }
+  });
   it('validates phone and OTP before invoking providers',async()=>{
     const deps=otpDependencies();
     expect((await requestCode('bad',deps)).step).toBe('phone');

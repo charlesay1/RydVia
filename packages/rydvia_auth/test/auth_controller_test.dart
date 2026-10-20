@@ -13,6 +13,7 @@ class FakeAuth implements AuthRepository {
   int verifies = 0;
   int requests = 0;
   String? requestedPhone;
+  String? verifiedPhone;
   AccessProfile profile = AccessProfile(
     userId: 'test-user',
     roles: ['customer'],
@@ -32,6 +33,7 @@ class FakeAuth implements AuthRepository {
 
   @override
   Future<void> verifyCode(String phone, String code) async {
+    verifiedPhone = phone;
     verifies++;
     if (fail) throw const AppFailure('otp_expired', 'The code has expired.');
     active = true;
@@ -61,6 +63,7 @@ class FakeAuth implements AuthRepository {
 AuthController controller(
   FakeAuth repo, {
   ProductRole role = ProductRole.customer,
+  SafeLogger? logger,
 }) => AuthController(
   repository: repo,
   role: role,
@@ -68,7 +71,7 @@ AuthController controller(
     supabaseUrl: 'https://example.supabase.co',
     publishableKey: 'sb_publishable_fixture',
   ),
-  logger: SafeLogger((_) {}),
+  logger: logger ?? SafeLogger((_) {}),
 );
 
 void main() {
@@ -169,6 +172,30 @@ void main() {
     },
   );
   for (final role in ProductRole.values) {
+    test(
+      '$role normalizes request and verification without logging PII',
+      () async {
+        final logs = <Map<String, String>>[];
+        auth.dispose();
+        auth = controller(repo, role: role, logger: SafeLogger(logs.add));
+        await auth.initialize();
+        await auth.sendCode('+2330244163371');
+        expect(repo.sends, 0);
+        expect(auth.message, 'Enter a valid Ghana mobile number.');
+        await auth.sendCode('024 416 3371');
+        expect(repo.requestedPhone, '+233244163371');
+        expect(auth.phone, '+233244163371');
+        await auth.verify('123456');
+        expect(repo.verifiedPhone, repo.requestedPhone);
+        expect(repo.verifies, 1);
+        expect(logs, isNotEmpty);
+        for (final entry in logs) {
+          expect(entry.keys, unorderedEquals(['event', 'timestamp']));
+          expect(entry.toString(), isNot(contains('244163371')));
+          expect(entry.toString(), isNot(contains('123456')));
+        }
+      },
+    );
     test(
       '$role restores only server-backed product access and honors revocation',
       () async {

@@ -53,6 +53,73 @@ SupabaseClient clientFor(
 
 void main() {
   test(
+    'all Ghana presentation forms reach the SDK as the same E.164 identity',
+    () async {
+      final requests = <http.Request>[];
+      final client = clientFor((request) async {
+        requests.add(request);
+        return request.url.path.endsWith('/verify')
+            ? jsonResponse(sessionFixture())
+            : jsonResponse({});
+      });
+      addTearDown(client.dispose);
+      final repo = SupabaseAuthRepository(client);
+      for (final input in [
+        '0244163371',
+        '024 416 3371',
+        '24 416 3371',
+        '+233244163371',
+        '+233 24 416 3371',
+        '233244163371',
+        '(024) 416-3371',
+      ]) {
+        await repo.requestCode(input);
+        await repo.verifyCode(input, '123456');
+        final pair = requests.sublist(requests.length - 2);
+        expect(pair.first.url.path, '/auth/v1/otp');
+        expect(pair.last.url.path, '/auth/v1/verify');
+        for (final request in pair) {
+          expect((jsonDecode(request.body) as Map)['phone'], '+233244163371');
+        }
+      }
+    },
+  );
+  test(
+    'invalid phones never reach request or verification transport',
+    () async {
+      var requests = 0;
+      final client = clientFor((_) async {
+        requests++;
+        return jsonResponse({});
+      });
+      addTearDown(client.dispose);
+      final repo = SupabaseAuthRepository(client);
+      for (final input in [
+        '',
+        'letters',
+        '0244',
+        '02441633711',
+        '+2330244163371',
+        '2330244163371',
+        '00233244163371',
+        '++233244163371',
+        '+233233244163371',
+        '+234244163371',
+      ]) {
+        // These adapters can reject synchronously, before producing a Future.
+        await expectLater(
+          () => repo.requestCode(input),
+          throwsA(isA<AppFailure>()),
+        );
+        await expectLater(
+          () => repo.verifyCode(input, '123456'),
+          throwsA(isA<AppFailure>()),
+        );
+      }
+      expect(requests, 0);
+    },
+  );
+  test(
     'requests SMS with normalized Ghana phone, public key, and no role metadata',
     () async {
       final requests = <http.Request>[];
@@ -121,7 +188,7 @@ void main() {
       final client = clientFor(
         (_) async => jsonResponse({
           'error_code': code,
-          'msg': 'sensitive-provider-detail',
+          'msg': 'sensitive-provider-detail +233244163371 OTP 123456',
         }, code == 'over_sms_send_rate_limit' ? 429 : 400),
       );
       addTearDown(client.dispose);
@@ -136,6 +203,8 @@ void main() {
       } on AuthException catch (error) {
         final failure = authFailure(error);
         expect(failure.message, isNot(contains('sensitive-provider-detail')));
+        expect(failure.message, isNot(contains('244163371')));
+        expect(failure.message, isNot(contains('123456')));
         expect(
           failure.code,
           code == 'otp_expired'

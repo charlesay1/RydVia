@@ -79,13 +79,18 @@ class AppFailure implements Exception {
   String toString() => 'AppFailure($code)';
 }
 
+/// Ghana-only identity contract: presentation text -> validated E.164.
+/// A trunk zero is allowed only in national input, never after a country code.
+/// Formatting establishes neither ownership nor SMS delivery eligibility.
 String normalizeGhanaPhone(String input) {
   var digits = input.replaceAll(RegExp(r'[\s()-]'), '');
-  if (digits.startsWith('+233'))
+  if (digits.startsWith('+233')) {
     digits = digits.substring(4);
-  else if (digits.startsWith('233') && digits.length == 12)
+  } else if (digits.startsWith('233') && digits.length == 12) {
     digits = digits.substring(3);
-  if (digits.startsWith('0')) digits = digits.substring(1);
+  } else if (digits.startsWith('0')) {
+    digits = digits.substring(1);
+  }
   if (!RegExp(r'^[25][0-9]{8}$').hasMatch(digits)) {
     throw const AppFailure('phone', 'Enter a valid Ghana mobile number.');
   }

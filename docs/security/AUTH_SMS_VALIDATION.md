@@ -1,5 +1,13 @@
 # RydVia Phone Auth and SMS validation
 
+> Historical preparation report. The current operational checklist is
+> [AUTH_CONFIGURATION_CHECKLIST.md](AUTH_CONFIGURATION_CHECKLIST.md).
+> All four migrations, including `20261019000300`, are now applied according to
+> external live verification, and their local/remote history versions are synchronized.
+> Statements below describing migration 4 as pending, the eighteen-policy baseline,
+> or CLI access as unavailable describe the earlier preparation phase and are superseded.
+> Live Auth/SMS configuration and real SMS delivery remain unverified.
+
 Project: `kciwxgfvpozgmnaypyxb`. Date: October 19, 2026.
 Status: **local preparation tested; live Auth configuration and real OTP are unverified**.
 Do not call this phase complete or production-ready until the live configuration is

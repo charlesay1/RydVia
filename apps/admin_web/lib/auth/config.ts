@@ -23,6 +23,6 @@ export function ghanaPhone(value: string): string | null {
   let digits = value.replace(/[\s()-]/g, '');
   if (digits.startsWith('+233')) digits = digits.slice(4);
   else if (digits.startsWith('233') && digits.length === 12) digits = digits.slice(3);
-  if (digits.startsWith('0')) digits = digits.slice(1);
+  else if (digits.startsWith('0')) digits = digits.slice(1);
   return /^[25][0-9]{8}$/.test(digits) ? `+233${digits}` : null;
 }

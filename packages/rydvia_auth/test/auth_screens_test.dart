@@ -52,29 +52,37 @@ void main() {
       );
     }
   }
-  testWidgets(
-    'Ghana input accepts local or international values without doubling the visible prefix',
-    (tester) async {
-      final repo = fakes.FakeAuth();
-      final auth = fakes.controller(repo);
-      addTearDown(auth.dispose);
-      addTearDown(repo.events.close);
-      await auth.initialize();
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: RydViaTheme.light(),
-          home: Scaffold(
-            body: SingleChildScrollView(child: WelcomeScreen(auth: auth)),
-          ),
-        ),
+  for (final role in ProductRole.values) {
+    for (final international in [false, true]) {
+      testWidgets(
+        '$role Ghana input accepts ${international ? 'international' : 'local'} format without doubling the prefix',
+        (tester) async {
+          final repo = fakes.FakeAuth();
+          final auth = fakes.controller(repo, role: role);
+          addTearDown(auth.dispose);
+          addTearDown(repo.events.close);
+          await auth.initialize();
+          await tester.pumpWidget(
+            MaterialApp(
+              theme: RydViaTheme.light(),
+              home: Scaffold(
+                body: SingleChildScrollView(child: WelcomeScreen(auth: auth)),
+              ),
+            ),
+          );
+          expect(find.text('🇬🇭 +233'), findsOneWidget);
+          await tester.enterText(
+            find.byType(TextField),
+            international ? '+233 24 416 3371' : '0244163371',
+          );
+          await tester.tap(find.text('Continue'));
+          await tester.pump();
+          expect(repo.requestedPhone, '+233244163371');
+          expect(auth.phone, '+233244163371');
+        },
       );
-      expect(find.text('🇬🇭 +233'), findsOneWidget);
-      await tester.enterText(find.byType(TextField), '+233241234567');
-      await tester.tap(find.text('Continue'));
-      await tester.pump();
-      expect(repo.requestedPhone, '+233241234567');
-    },
-  );
+    }
+  }
   testWidgets(
     'OTP accepts paste and advances automatically; countdown disables resend',
     (tester) async {
