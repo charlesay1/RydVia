@@ -46,11 +46,35 @@ void main() {
             ),
           );
           expect(find.text('Welcome to RydVia'), findsOneWidget);
+          expect(find.text('🇬🇭 +233'), findsOneWidget);
           expect(tester.takeException(), isNull);
         },
       );
     }
   }
+  testWidgets(
+    'Ghana input accepts local or international values without doubling the visible prefix',
+    (tester) async {
+      final repo = fakes.FakeAuth();
+      final auth = fakes.controller(repo);
+      addTearDown(auth.dispose);
+      addTearDown(repo.events.close);
+      await auth.initialize();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: RydViaTheme.light(),
+          home: Scaffold(
+            body: SingleChildScrollView(child: WelcomeScreen(auth: auth)),
+          ),
+        ),
+      );
+      expect(find.text('🇬🇭 +233'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '+233241234567');
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+      expect(repo.requestedPhone, '+233241234567');
+    },
+  );
   testWidgets(
     'OTP accepts paste and advances automatically; countdown disables resend',
     (tester) async {

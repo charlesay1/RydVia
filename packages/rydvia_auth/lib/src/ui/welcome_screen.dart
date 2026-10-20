@@ -85,13 +85,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         const SizedBox(height: RydViaSpacing.s24),
         TextField(
           controller: phone,
+          enabled: !auth.busy,
           keyboardType: TextInputType.phone,
           autofillHints: const [AutofillHints.telephoneNumberNational],
           textInputAction: TextInputAction.done,
           onSubmitted: (_) => auth.sendCode(phone.text),
           decoration: const InputDecoration(
             labelText: 'Enter your mobile number',
-            prefixText: '🇬🇭 +233  ',
+            prefixIcon: Padding(
+              padding: EdgeInsets.symmetric(horizontal: RydViaSpacing.s12),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [Text('🇬🇭 +233')],
+              ),
+            ),
           ),
         ),
         if (auth.message != null)

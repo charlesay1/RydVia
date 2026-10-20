@@ -25,12 +25,15 @@ and deployment threat models still need a release security review.
 
 ## External live verification and pending rollout
 
-The user externally verified ACTIVE_HEALTHY, no app-specific public tables, zero Auth
-users/buckets/migrations/Edge Functions, and unsafe anon/authenticated execution of
-the platform SECURITY DEFINER helper `public.rls_auto_enable()`. This session performs
-local work only. Auth/SMS settings, Realtime, unrelated schema objects, and role grants
-still need external inspection. Local tests do not establish production readiness.
-No remote project change was performed here.
+The user externally verified that the original three migrations are applied: ten
+RLS-enabled app tables, eighteen policies, thirteen disabled services/flags/availability
+entries, approval-gated product access, no app users, and denied PUBLIC/anon/authenticated
+execution of public.rls_auto_enable(). This session performs local work only. Auth/SMS
+settings are not inspected yet; local tests do not establish production readiness.
+No remote project change was performed here. The new 0003 candidate adds replay-safe
+bootstrap, a flag-key index, and separate Admin write policies without changing access.
+See [Auth/SMS validation](AUTH_SMS_VALIDATION.md) for onboarding definer-function review,
+pending live checks, and the candidate's application boundary. Do not replay 000-002.
 
 The first local migration revokes PUBLIC/anon/authenticated helper execution while
 preserving automatic RLS event triggers. Foundation migrations explicitly revoke

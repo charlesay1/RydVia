@@ -31,7 +31,7 @@ it('does not print remote error bodies or tokens and never approves automatic mi
 });
 it('derives a fresh local baseline and detects RLS, view, grant, and policy drift without authorizing changes',async()=>{
   const local=await localCatalog(new URL('../../',import.meta.url));
-  expect(local.migrations).toEqual(['20261019000000','20261019000100','20261019000200']);
+  expect(local.migrations).toEqual(['20261019000000','20261019000100','20261019000200','20261019000300']);
   expect(compareCatalogs(local.inventory,local.inventory)).toMatchObject({status:'matching_objects_require_migration_history_and_data_review',autoApplyAllowed:false});
   const changed=structuredClone(local.inventory);
   changed.relations.find((row:{name:string})=>row.name==='profiles').rls=false;

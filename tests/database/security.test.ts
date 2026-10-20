@@ -29,6 +29,7 @@ beforeAll(async () => {
   await db.exec(readFileSync(new URL('../../supabase/migrations/20261019000000_restrict_rls_auto_enable.sql', import.meta.url),'utf8'));
   await db.exec(readFileSync(new URL('../../supabase/migrations/20261019000100_identity_services.sql', import.meta.url),'utf8'));
   await db.exec(readFileSync(new URL('../../supabase/migrations/20261019000200_effective_product_access.sql', import.meta.url),'utf8'));
+  await db.exec(readFileSync(new URL('../../supabase/migrations/20261019000300_auth_bootstrap_and_policy_cleanup.sql', import.meta.url),'utf8'));
   for (const id of [alice,bob,admin]) await db.query('insert into auth.users(id,raw_user_meta_data) values ($1,$2)',[id,JSON.stringify({role:'admin'})]);
   await db.query("insert into public.user_roles(user_id,role) values ($1,'admin')",[admin]);
 });
@@ -139,6 +140,51 @@ describe.sequential('PostgreSQL migration and security behavior', () => {
       expect((await db.query('select id from public.profiles')).rows).toEqual([{id:bob}]);
       await expect(db.query("insert into public.user_roles(user_id,role) values ($1,'admin')",[bob])).rejects.toMatchObject({code:'42501'});
     });
+  });
+  it('keeps onboarding constrained and idempotent for approved applicants and denies every staff role', async () => {
+    await asUser(bob,async()=>{
+      for(const role of ['admin','operations','finance','support','analytics']) {
+        await expect(db.query("select public.complete_onboarding('Applicant',$1)",[role])).rejects.toMatchObject({code:'22023'});
+      }
+      await expect(db.query("select public.complete_onboarding('Applicant',null)")).rejects.toMatchObject({code:'22023'});
+      await db.query("select public.complete_onboarding('Business applicant','business')");
+      await db.query("select public.complete_onboarding('Business applicant','business')");
+      expect((await db.query('select approval_status from public.business_profiles')).rows).toEqual([{approval_status:'approved'}]);
+      expect((await db.query('select role from public.user_roles order by role')).rows).toEqual([{role:'business'},{role:'customer'}]);
+      expect((await db.query("select status from public.role_requests where requested_role='business'")).rows).toEqual([{status:'approved'}]);
+    });
+  });
+  it('allows bootstrap replay without overwriting profiles, metadata-independent roles, or approvals', async () => {
+    const snapshot=async()=>({
+      profiles:(await db.query('select * from public.profiles order by id')).rows,
+      roles:(await db.query('select * from public.user_roles order by user_id,role')).rows,
+      customers:(await db.query('select * from public.customer_profiles order by user_id')).rows,
+      drivers:(await db.query('select * from public.driver_profiles order by user_id')).rows,
+      businesses:(await db.query('select * from public.business_profiles order by user_id')).rows,
+    });
+    const before=await snapshot();
+    await db.exec('create trigger fixture_bootstrap_replay after update on auth.users for each row execute function private.bootstrap_profile()');
+    try {
+      await db.query("update auth.users set raw_user_meta_data=$1 where id=$2",[JSON.stringify({role:'admin'}),alice]);
+      expect(await snapshot()).toEqual(before);
+    } finally {await db.exec('drop trigger fixture_bootstrap_replay on auth.users');}
+    const user='44444444-4444-4444-8444-444444444444';
+    await db.exec('create trigger fixture_bootstrap_duplicate after insert on auth.users for each row execute function private.bootstrap_profile()');
+    try {
+      await db.query('insert into auth.users(id) values ($1)',[user]);
+      expect((await db.query('select role from public.user_roles where user_id=$1',[user])).rows).toEqual([{role:'customer'}]);
+      expect((await db.query('select user_id from public.customer_profiles where user_id=$1',[user])).rows).toEqual([{user_id:user}]);
+    } finally {await db.exec('drop trigger fixture_bootstrap_duplicate on auth.users');}
+  });
+  it('indexes the flag foreign key, preserves the vehicle index, and avoids duplicate permissive SELECT paths', async () => {
+    const indexes=await db.query<{indexname:string}>('select indexname from pg_indexes where schemaname=\'public\'');
+    expect(indexes.rows.map(row=>row.indexname)).toEqual(expect.arrayContaining(['service_availability_flag_key_idx','vehicles_driver_idx']));
+    const policies=await db.query<{tablename:string;cmd:string;roles:string[]}>('select tablename,cmd,roles from pg_policies where schemaname=\'public\'');
+    expect(policies.rows).toHaveLength(34);
+    expect(policies.rows.some(row=>row.cmd==='ALL')).toBe(false);
+    for(const table of ['profiles','user_roles','role_requests','customer_profiles','driver_profiles','business_profiles','vehicles','services','feature_flags','service_availability']) {
+      expect(policies.rows.filter(row=>row.tablename===table&&row.cmd==='SELECT'&&row.roles.includes('authenticated'))).toHaveLength(1);
+    }
   });
   it('prepares a metadata-only catalog without reading user rows or exposing definitions', async () => {
     const sql=readFileSync(new URL('../../supabase/audit/catalog.sql',import.meta.url),'utf8');

@@ -4,6 +4,13 @@ Prepared locally for project `kciwxgfvpozgmnaypyxb`. Execute remote operations o
 from the externally authorized Supabase environment. No remote application is
 authorized from this VS Code session. Do not reset the remote database.
 
+**Current status:** the user has externally verified migrations 000, 001, and 002
+are already applied and verified. Do NOT repeat the initial application instructions
+below on this project. They are retained as historical rollout documentation.
+The only new candidate is `20261019000300_auth_bootstrap_and_policy_cleanup.sql`;
+it remains unapplied here. Follow the preflight/post-checks in
+[AUTH_SMS_VALIDATION.md](AUTH_SMS_VALIDATION.md) before external application.
+
 ## Preflight
 
 1. Confirm project identity and health, zero migration history, no application tables,

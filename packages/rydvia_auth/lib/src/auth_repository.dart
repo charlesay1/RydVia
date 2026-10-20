@@ -21,12 +21,14 @@ class SupabaseAuthRepository implements AuthRepository {
   Stream<bool> get sessionChanges =>
       client.auth.onAuthStateChange.map((event) => event.session != null);
   @override
-  Future<void> requestCode(String phone) =>
-      client.auth.signInWithOtp(phone: phone);
+  Future<void> requestCode(String phone) => client.auth.signInWithOtp(
+    phone: normalizeGhanaPhone(phone),
+    shouldCreateUser: true,
+  );
   @override
   Future<void> verifyCode(String phone, String code) async {
     final response = await client.auth.verifyOTP(
-      phone: phone,
+      phone: normalizeGhanaPhone(phone),
       token: code,
       type: OtpType.sms,
     );
@@ -40,9 +42,14 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<AccessProfile> accessProfile() async {
-    final data = Map<String, dynamic>.from(
-      await client.rpc('access_profile') as Map,
-    );
+    final result = await client.rpc('access_profile');
+    if (result is! Map) {
+      throw const AppFailure(
+        'profile',
+        'Your profile is not ready yet. Try again or contact support.',
+      );
+    }
+    final data = Map<String, dynamic>.from(result);
     final userId = client.auth.currentUser?.id;
     if (userId == null || data['user_id'] != userId) {
       throw const AppFailure('session', 'Please sign in again.');
@@ -63,7 +70,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signOut() => client.auth.signOut();
+  Future<void> signOut() => client.auth.signOut(scope: SignOutScope.local);
 }
 
 AppFailure authFailure(Object error) {
@@ -73,6 +80,10 @@ AppFailure authFailure(Object error) {
       'otp_expired' => const AppFailure(
         'otp_expired',
         'This code is invalid or expired. Request a new code.',
+      ),
+      'sms_send_failed' => const AppFailure(
+        'sms',
+        'A code could not be delivered. Try again later or contact support.',
       ),
       'over_sms_send_rate_limit' ||
       'over_request_rate_limit' => const AppFailure(

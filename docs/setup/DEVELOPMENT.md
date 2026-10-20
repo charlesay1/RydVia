@@ -67,7 +67,9 @@ server-only, with no `NEXT_PUBLIC_*` keys or browser Supabase client. The server
 verifies sessions and database admin membership; missing configuration fails closed.
 Operational records remain labeled fixtures until a live repository is implemented.
 See [live reconciliation](../security/LIVE_SUPABASE_RECONCILIATION.md) for the externally
-verified empty live baseline and pending SMS validation. Apply the prepared files only
+verified migrated live baseline and pending SMS validation. Do not replay the three
+already applied migrations. See [Auth/SMS validation](../security/AUTH_SMS_VALIDATION.md)
+for the new local candidate and controlled OTP testing. Apply new migrations only
 from the authorized external environment, following the
 [migration runbook](../security/MIGRATION_APPLICATION.md).
 No privileged environment variables belong in browser code.

@@ -21,5 +21,6 @@ dependencies:
   rydvia_design_system:
     path: ../rydvia_design_system
 dev_dependencies:
+  http: ^1.6.0
   flutter_test:
     sdk: flutter

@@ -1,6 +1,15 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(19);
+select plan(24);
+select ok(to_regclass('public.service_availability_flag_key_idx') is not null,'flag foreign key is indexed');
+select ok(to_regclass('public.vehicles_driver_idx') is not null,'vehicle driver index is preserved');
+select is((select count(*)::integer from (
+  select tablename from pg_policies where schemaname='public'
+    and cmd in ('ALL','SELECT') and 'authenticated'=any(roles)
+  group by tablename having count(*)>1
+) duplicate_select_paths),0,'no overlapping permissive SELECT policies');
+select ok(not has_function_privilege('authenticated','private.bootstrap_profile()','EXECUTE'),
+  'bootstrap remains a private trigger function');
 -- The platform helper is optional in a clean local stack. If present, clients
 -- must have no effective EXECUTE privilege (including inherited PUBLIC grants).
 select ok(coalesce((select not has_function_privilege('anon',p.oid,'EXECUTE')
@@ -11,9 +20,13 @@ select ok(coalesce((select not has_function_privilege('authenticated',p.oid,'EXE
   'authenticated cannot execute the optional RLS platform helper');
 select is((select count(*)::integer from pg_class c join pg_namespace n on n.oid=c.relnamespace
   where n.nspname='public' and c.relname in ('profiles','user_roles','role_requests','customer_profiles','driver_profiles','business_profiles','vehicles','services','feature_flags','service_availability') and c.relrowsecurity), 10, 'all foundation tables enable RLS');
-insert into auth.users(id,phone) values
+create trigger fixture_identity_bootstrap_duplicate after insert on auth.users
+for each row execute function private.bootstrap_profile();
+select lives_ok($$insert into auth.users(id,phone) values
   ('11111111-1111-4111-8111-111111111111','+233241234567'),
-  ('22222222-2222-4222-8222-222222222222','+233501234567');
+  ('22222222-2222-4222-8222-222222222222','+233501234567')$$,
+  'duplicate bootstrap preserves one customer identity per signup');
+drop trigger fixture_identity_bootstrap_duplicate on auth.users;
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',true);
 select is((select count(*)::integer from public.profiles),1,'user cannot read other profiles');

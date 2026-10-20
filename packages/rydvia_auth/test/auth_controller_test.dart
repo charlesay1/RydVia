@@ -12,6 +12,7 @@ class FakeAuth implements AuthRepository {
   int sends = 0;
   int verifies = 0;
   int requests = 0;
+  String? requestedPhone;
   AccessProfile profile = AccessProfile(
     userId: 'test-user',
     roles: ['customer'],
@@ -24,6 +25,7 @@ class FakeAuth implements AuthRepository {
   Stream<bool> get sessionChanges => events.stream;
   @override
   Future<void> requestCode(String phone) async {
+    requestedPhone = phone;
     sends++;
     if (fail) throw Exception('private detail');
   }
