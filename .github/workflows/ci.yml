@@ -9,7 +9,22 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test secret scanner rejection and redaction
+        run: node --test tests/security/secret-scan.test.mjs
+      - name: Scan repository and full fetched Git history
+        run: node scripts/scan-secrets.mjs --history
   web-and-database:
+    needs: secret-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,6 +44,7 @@ jobs:
           ./scripts/test-tokens.ps1
           ./scripts/test-platforms.ps1
   flutter:
+    needs: secret-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +57,7 @@ jobs:
         shell: pwsh
         run: ./scripts/validate-flutter.ps1
   supabase-local:
+    needs: secret-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
