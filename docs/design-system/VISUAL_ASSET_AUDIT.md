@@ -88,6 +88,9 @@ appearance, reduced motion and focus styles are preserved.
   checks remain pending.
 - Run token/native checks, the shared secret scanner and repository verification
   before checkpointing. CI remains the final check of the pushed revision.
+- The first CI run passed the visual tests but two PostgreSQL WASM cold-start
+  cases exceeded the default five seconds. Only those two integration cases now
+  have a bounded 30-second timeout; all SQL/RLS assertions remain unchanged.
 
 No backend migration, service flag, role/profile policy or production SMS setting
 is changed by this visual work.

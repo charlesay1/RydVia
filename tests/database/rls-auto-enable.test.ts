@@ -6,6 +6,7 @@ import { it, expect } from 'vitest';
 const migration = readFileSync(new URL('../../supabase/migrations/20261019000000_restrict_rls_auto_enable.sql', import.meta.url), 'utf8');
 const roles = 'create role anon nologin; create role authenticated nologin; create role service_role nologin;';
 
+// First PostgreSQL WASM startup can exceed five seconds on shared CI runners.
 it('allows a clean local database without creating or replacing the platform helper', async () => {
   const db = new PGlite();
   try {
@@ -14,7 +15,7 @@ it('allows a clean local database without creating or replacing the platform hel
     await db.exec(migration);
     expect((await db.query("select to_regprocedure('public.rls_auto_enable()') as helper")).rows).toEqual([{ helper: null }]);
   } finally { await db.close(); }
-});
+}, 30_000);
 
 it('removes explicit and PUBLIC client grants without breaking automatic RLS or trusted grants', async () => {
   const db = new PGlite();

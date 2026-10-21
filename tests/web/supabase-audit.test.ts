@@ -29,6 +29,7 @@ it('does not print remote error bodies or tokens and never approves automatic mi
   expect(reconciliationFindings({relations:[],functions:[]},['profiles']).autoApplyAllowed).toBe(false);
   expect(reconciliationFindings(null,['profiles']).status).toBe('unverified');
 });
+// This integration case boots PostgreSQL WASM, unlike the transport-only cases.
 it('derives a fresh local baseline and detects RLS, view, grant, and policy drift without authorizing changes',async()=>{
   const local=await localCatalog(new URL('../../',import.meta.url));
   expect(local.migrations).toEqual(['20261019000000','20261019000100','20261019000200','20261019000300']);
@@ -41,4 +42,4 @@ it('derives a fresh local baseline and detects RLS, view, grant, and policy drif
   const result=compareCatalogs(changed,local.inventory);
   expect(result.autoApplyAllowed).toBe(false);
   expect(result.differences.map((row:{issue:string})=>row.issue)).toEqual(expect.arrayContaining(['different_rls','different_securityInvoker','additional_live_policy_requires_review','additional_function_grant_anon']));
-});
+},30_000);
