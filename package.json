@@ -11,6 +11,8 @@
     "node": ">=22.0.0"
   },
   "scripts": {
+    "check:brand": "node scripts/verify-brand-assets.mjs",
+    "check:brand-release": "node scripts/verify-brand-assets.mjs --release",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",

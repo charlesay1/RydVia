@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "canonicalSource": "assets/brand",
+  "uiIntegration": "development-placeholder",
+  "approvalPolicy": "Only verified owner-approved masters with provenance and file hash may be registered as approved. Generated photography, screenshots and mockups are never logo sources.",
+  "requirements": [
+    {
+      "id": "primary-symbol",
+      "label": "Primary symbol SVG",
+      "directory": "symbol",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "primary-wordmark",
+      "label": "Custom wordmark SVG",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "horizontal-lockup",
+      "label": "Horizontal lockup",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "stacked-lockup",
+      "label": "Stacked lockup",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "light-variation",
+      "label": "Light-surface variation",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "dark-variation",
+      "label": "Dark-surface variation",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "monochrome-variation",
+      "label": "Monochrome variation",
+      "directory": "logo",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "app-icon-master",
+      "label": "App-icon master (1024×1024 minimum)",
+      "directory": "app-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "customer-launcher",
+      "label": "Customer launcher artwork",
+      "directory": "app-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "driver-launcher",
+      "label": "Driver launcher artwork",
+      "directory": "app-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "business-launcher",
+      "label": "Business launcher artwork",
+      "directory": "app-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "web-favicon",
+      "label": "Web favicon",
+      "directory": "web-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "pwa-icons",
+      "label": "PWA icon family",
+      "directory": "web-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "apple-touch-icon",
+      "label": "Apple touch icon",
+      "directory": "web-icons",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "brand-guidelines",
+      "label": "Brand board/source guidelines",
+      "directory": "guidelines",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    },
+    {
+      "id": "clear-space",
+      "label": "Clear-space and minimum-size rules",
+      "directory": "guidelines",
+      "status": "missing",
+      "path": null,
+      "approval": null
+    }
+  ],
+  "references": [
+    {
+      "id": "brand-brief",
+      "label": "Textual requirements only; not official artwork or a brand board",
+      "status": "reference-only",
+      "path": "assets/brand/README.md",
+      "approval": null
+    }
+  ],
+  "photographySource": "assets/photography/manifest.json"
+}

@@ -3,9 +3,11 @@ $root = Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'with-tools.ps1')
 foreach ($role in @('customer','driver','business')) {
     $app = Join-Path $root "apps/${role}_app"
+    $createdNativeProject = $false
     if (!(Test-Path -LiteralPath (Join-Path $app 'android'))) {
         & flutter create --empty --platforms=android,ios --no-pub --org com.rydvia $app
         if ($LASTEXITCODE -ne 0) { throw "Platform generation failed for $role" }
+        $createdNativeProject = $true
         # Remove only newly generated template icons, never approved brand assets.
         $icons = @(Get-ChildItem -LiteralPath (Join-Path $app 'android/app/src/main/res') -Recurse -File -Filter 'ic_launcher.png')
         $iconSet = Join-Path $app 'ios/Runner/Assets.xcassets/AppIcon.appiconset'
@@ -32,7 +34,9 @@ foreach ($role in @('customer','driver','business')) {
     $manifestPath = Join-Path $app 'android/app/src/main/AndroidManifest.xml'
     $manifest = [IO.File]::ReadAllText($manifestPath)
     $manifest = [regex]::Replace($manifest, 'android:label="[^"]*"', "android:label=`"$title`"")
-    $manifest = [regex]::Replace($manifest, '\s+android:icon="[^"]*"', '')
+    # Only a newly created Flutter template has an unapproved template icon.
+    # Preserve any existing icon reference; approved exports must survive reruns.
+    if ($createdNativeProject) { $manifest = [regex]::Replace($manifest, '\s+android:icon="[^"]*"', '') }
     if (!$manifest.Contains('android.permission.INTERNET')) {
         $manifest = $manifest.Replace('<application', '<uses-permission android:name="android.permission.INTERNET" />' + "`n    <application")
     }

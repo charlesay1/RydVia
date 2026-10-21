@@ -1,7 +1,19 @@
 # Approved RydVia assets required
 
-No approved logo vector, brand board, welcome-screen screenshot reference, licensed
-photography, or font file was attached. Existing text specifications are authoritative.
+No approved logo/vector, icon master or official brand-board artwork is present.
+The canonical status register is `manifest.json`; all sixteen required master slots
+are MISSING. Existing text specifications are reference requirements, not artwork.
+Manrope is bundled for UI use and is not the custom RydVia wordmark.
+
+Use `logo/`, `symbol/`, `app-icons/`, `web-icons/` and `guidelines/` as the canonical
+handoff slots. Do not place guessed or generated marks in application public folders.
+`RydViaBrandSlot` (Flutter) and `BrandSlot` (web) are marked development placeholders;
+their typed labels are not official logos. Normal app/page titles remain real text.
+
+`npm run check:brand` audits development status and rejects broken/non-canonical or
+unregistered artwork. `npm run check:brand-release` intentionally fails while approved
+masters, approved rendering integration or native/web exports are incomplete.
+Development builds and green CI do not authorize production branding or distribution.
 
 Supply original SVG/vector masters for the flowing interconnected R + V symbol
 with the integrated upper-right Warm Coral location pin, custom wordmark, primary,

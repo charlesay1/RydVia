@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ThemeControl } from '@rydvia/design-system/theme';
 import { CampaignPhoto } from '@rydvia/design-system/photography';
+import { BrandSlot } from '@rydvia/design-system/brand';
 
 const services = [
   { id: 'ride', title: 'Rides', subtitle: 'Your next stop, made simpler.', text: 'A considered way to connect people and places, from everyday trips to planned journeys.', link: 'Explore rides' },
@@ -10,7 +11,7 @@ const services = [
   { id: 'drive', title: 'Drive with RydVia', subtitle: 'Move forward, together.', text: 'A driver experience designed to bring eligible ride and delivery opportunities into one place.', link: 'Become a partner' },
 ];
 export default function Home() {
-  return <div className="container"><header className="site-header"><Link href="/" className="site-name">RydVia</Link><nav aria-label="Main navigation" className="site-nav"><Link href="/">Home</Link><a href="#ride">Ride</a><a href="#deliveries">Deliveries</a><a href="#business">For Business</a><a href="#drive">Drive with RydVia</a><a href="#about">About</a></nav><ThemeControl /></header>
+  return <div className="container"><header className="site-header"><Link href="/" className="site-name"><BrandSlot /></Link><nav aria-label="Main navigation" className="site-nav"><Link href="/">Home</Link><a href="#ride">Ride</a><a href="#deliveries">Deliveries</a><a href="#business">For Business</a><a href="#drive">Drive with RydVia</a><a href="#about">About</a></nav><ThemeControl /></header>
     <main id="main"><section className="hero"><div><p className="eyebrow">Designed for movement · Ghana</p><h1>Welcome to<br/>RydVia</h1><h2>Ride. Deliver. Move.</h2><p className="hero-copy muted">A modern platform for rides, deliveries, local commerce, and smart mobility.</p><div className="row"><Link className="button" href="/get-started">Get Started <span aria-hidden="true">↗</span></Link><Link className="button secondary" href="/partners">Become a Partner</Link></div><p className="muted" style={{marginTop: 24}}>In development. Service availability and app downloads will be announced at launch.</p></div>
       <figure className="campaign-hero"><CampaignPhoto asset="ecosystem" priority alt="A customer checks her phone beside a driver and a neighborhood shop." /><figcaption><p className="eyebrow">People. Places. Possibilities.</p><strong>A better-connected everyday.</strong></figcaption></figure>
     </section>
@@ -21,5 +22,5 @@ export default function Home() {
     </div></section>
     <section className="service-section" aria-labelledby="service-heading"><p className="eyebrow muted">One platform. More possibilities.</p><h2 id="service-heading">However your day moves.</h2><div className="service-grid">{services.map((service, index) => <article id={service.id} className="panel service-card" key={service.id}><span className="number" aria-hidden="true">0{index+1}</span><h3>{service.title}</h3><strong>{service.subtitle}</strong><p className="muted">{service.text}</p><Link href={service.id === 'drive' || service.id === 'business' ? '/partners' : '/get-started'}>{service.link} →</Link></article>)}</div></section>
     <section id="about" className="cta-band"><p className="eyebrow">Effortless movement.</p><h2>Built around real journeys.</h2><p>RydVia is being built for mobility, deliveries, logistics, moving, towing, and local businesses across Ghana. Services will open as operational readiness and local availability are confirmed.</p><Link href="/partners">Explore partnership opportunities →</Link></section></main>
-    <footer className="row"><strong>RydVia</strong><span className="muted">Premium mobility. Warm technology. Effortless movement.</span><Link href="/support">Support</Link><Link href="/legal/terms">Terms</Link><Link href="/legal/privacy">Privacy</Link></footer></div>;
+    <footer className="row"><BrandSlot decorative /><span className="muted">Premium mobility. Warm technology. Effortless movement.</span><Link href="/support">Support</Link><Link href="/legal/terms">Terms</Link><Link href="/legal/privacy">Privacy</Link></footer></div>;
 }

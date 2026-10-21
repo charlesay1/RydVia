@@ -84,7 +84,7 @@ class _RydViaMobileAppState extends State<RydViaMobileApp>
           },
           child: Scaffold(
             appBar: AppBar(
-              title: Text('RydVia · ${widget.role.name}'),
+              title: RydViaBrandSlot(product: widget.role.name),
               actions: [
                 PopupMenuButton<ThemeMode>(
                   tooltip: 'Appearance',

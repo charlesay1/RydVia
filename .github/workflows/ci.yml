@@ -38,11 +38,12 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:admin-http
-      - name: Token and native-structure checks
+      - name: Token, native and brand asset checks
         shell: pwsh
         run: |
           ./scripts/test-tokens.ps1
           ./scripts/test-platforms.ps1
+          node ./scripts/verify-brand-assets.mjs
   flutter:
     needs: secret-scan
     runs-on: ubuntu-latest

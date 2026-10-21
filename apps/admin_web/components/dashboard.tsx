@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ThemeControl } from '@rydvia/design-system/theme';
+import { BrandSlot } from '@rydvia/design-system/brand';
 import { FixtureDashboardRepository, summarize, type Booking, type DashboardRepository } from '../lib/dashboard-repository';
 
 const defaultRepository = new FixtureDashboardRepository();
@@ -22,7 +23,7 @@ export function Dashboard({repository = defaultRepository}: {repository?: Dashbo
   const metrics = summarize(rows);
   const visibleRows = section === 'Live Operations' ? rows.filter(row => row.status === 'active') : rows;
   const isBookingSection = ['Overview','Bookings','Live Operations','Analytics'].includes(section);
-  return <><div className="fixture-banner" role="status">Fixture preview · All metrics and bookings below are synthetic. Operational records are fixtures, not live production data.</div><div className="admin-shell"><aside className="sidebar"><Link href="/" className="site-name">RydVia <small>Admin</small></Link><nav aria-label="Admin navigation">{sections.map(item => <button key={item} onClick={() => setSection(item)} aria-current={section === item ? 'page' : undefined}>{item}</button>)}</nav></aside><main id="main" className="admin-main"><header className="admin-header"><div><p className="eyebrow muted">Your operations workspace</p><h1>Welcome to RydVia Admin</h1><strong>Control. Monitor. Grow.</strong><p className="muted">Manage customers, drivers, businesses, services, and operations from one powerful dashboard.</p></div><ThemeControl /></header>
+  return <><div className="fixture-banner" role="status">Fixture preview · All metrics and bookings below are synthetic. Operational records are fixtures, not live production data.</div><div className="admin-shell"><aside className="sidebar"><Link href="/" className="site-name"><BrandSlot product="Admin" /></Link><nav aria-label="Admin navigation">{sections.map(item => <button key={item} onClick={() => setSection(item)} aria-current={section === item ? 'page' : undefined}>{item}</button>)}</nav></aside><main id="main" className="admin-main"><header className="admin-header"><div><p className="eyebrow muted">Your operations workspace</p><h1>Welcome to RydVia Admin</h1><strong>Control. Monitor. Grow.</strong><p className="muted">Manage customers, drivers, businesses, services, and operations from one powerful dashboard.</p></div><ThemeControl /></header>
     <div className="row"><h2 style={{marginBottom:0}}>{section}</h2><span className="muted">Preview workspace</span></div>
     {isBookingSection && <div className="filters"><label>Date range<select value={days} onChange={event=>setDays(Number(event.target.value))}><option value={7}>Last 7 days</option><option value={30}>Last 30 days</option><option value={90}>Last 90 days</option></select></label><label>Service<select value={service} onChange={event=>setService(event.target.value)}>{['All','Ride','Delivery','Moving','Towing'].map(value=><option key={value}>{value}</option>)}</select></label></div>}
     {state === 'loading' ? <p role="status">Loading fixture data…</p> : state === 'error' ? <div className="panel" role="alert"><h2>Could not load dashboard data</h2><button onClick={()=>setRetry(value=>value+1)}>Try again</button></div> : isBookingSection ? <>
