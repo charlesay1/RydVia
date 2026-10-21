@@ -75,6 +75,7 @@ void main() {
             find.byType(TextField),
             international ? '+233 24 416 3371' : '0244163371',
           );
+          await tester.ensureVisible(find.text('Continue'));
           await tester.tap(find.text('Continue'));
           await tester.pump();
           expect(repo.requestedPhone, '+233244163371');

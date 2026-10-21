@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: const EdgeInsets.all(RydViaSpacing.s24),
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: RydViaColors.midnightNavy,
             borderRadius: BorderRadius.circular(RydViaRadius.card),
@@ -50,23 +50,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                color: RydViaColors.warmCoral,
-                size: RydViaSpacing.s48,
-              ),
-              const SizedBox(height: RydViaSpacing.s24),
-              Text(
-                subtitle,
-                style: RydViaTypography.h1.copyWith(
-                  color: RydViaColors.warmOffWhite,
-                ),
-              ),
-              const SizedBox(height: RydViaSpacing.s12),
-              Text(
-                'Premium mobility. Warm technology. Effortless movement.',
-                style: RydViaTypography.body.copyWith(
-                  color: RydViaColors.softSlate,
+              RydViaCampaignPhoto(asset: auth.role.name, fallbackIcon: icon),
+              Padding(
+                padding: const EdgeInsets.all(RydViaSpacing.s20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      subtitle,
+                      style: RydViaTypography.h1.copyWith(
+                        color: RydViaColors.warmOffWhite,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

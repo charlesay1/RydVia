@@ -14,10 +14,14 @@ adaptive foreground/background and monochrome layers, iPhone/iPad AppIcon sizes,
 1024-pixel App Store master. Web favicon, PWA, and Apple touch icons are also pending.
 Any Flutter-generated template icon must be removed before distribution.
 
-Welcome screens currently use deliberate native color panels with service icons;
-these are not logo placeholders. Final owned/licensed Accra customer, driver, and
-merchant photography must be centralized under assets/photography, with responsive
-WebP/AVIF exports and documented ownership. No external image hotlinks are used.
+Welcome screens now use shared, locally bundled campaign imagery with solid
+caption/form surfaces. The generated Ghana-inspired candidates, source prompts,
+review status and application mapping are recorded in `assets/photography/manifest.json`.
+Canonical compressed images live in `packages/rydvia_ui/assets/photography`; web
+exports are synchronized from those files. They are not documentary images or
+portraits of actual RydVia partners. Final brand/locality/legal approval or replacement
+with owned/licensed photography remains required before release. No external image
+hotlinks or generated logo replacements are used.
 
 Manrope and its OFL license are now bundled centrally in `packages/rydvia_ui/fonts`.
 The custom logo wordmark is never replaced

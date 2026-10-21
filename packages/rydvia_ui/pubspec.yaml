@@ -12,6 +12,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter:
+  assets:
+    - assets/photography/customer.webp
+    - assets/photography/driver.webp
+    - assets/photography/business.webp
+    - assets/photography/ecosystem.webp
   fonts:
     - family: Manrope
       fonts:

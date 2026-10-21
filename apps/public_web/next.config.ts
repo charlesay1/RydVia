@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = { transpilePackages: ['@rydvia/design-system'], poweredByHeader: false,
+  images: { deviceSizes: [768, 1536], imageSizes: [] },
   async headers() { return [{ source: '/(.*)', headers: [
     { key: 'X-Content-Type-Options', value: 'nosniff' },
     { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },

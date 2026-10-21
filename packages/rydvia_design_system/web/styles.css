@@ -31,11 +31,20 @@ h3 { font-size: 1.2rem; }
 .hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; padding: 72px 0; }
 .hero-copy { font-size: 1.12rem; max-width: 44ch; }
 .hero .eyebrow { color: var(--rv-action); }
-.hero-scene { background: var(--rv-colors-midnight-navy); color: var(--rv-colors-warm-off-white); border-radius: var(--rv-radius-card); padding: 40px; min-height: 400px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-.hero-scene .eyebrow { color: var(--rv-colors-warm-coral); }
-.journey { display: grid; gap: 20px; padding: 32px 0; }
-.journey div { display: flex; align-items: center; gap: 16px; }
-.journey span { display: inline-grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--rv-colors-soft-slate); border-radius: 12px; font-weight: 700; flex-shrink: 0; }
+.campaign-hero { margin: 0; min-width: 0; border-radius: var(--rv-radius-card); overflow: hidden; background: var(--rv-surface); border: 1px solid var(--rv-border); }
+.campaign-hero figcaption { padding: 24px; }
+.campaign-hero figcaption p { margin-bottom: 8px; }
+.campaign-photo { aspect-ratio: 3 / 2; position: relative; overflow: hidden; background: var(--rv-colors-midnight-navy); }
+.campaign-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 65% 40%; }
+.campaign-ecosystem .campaign-image { object-position: 50% 50%; }
+.campaign-photo-fallback { height: 100%; display: grid; place-items: center; color: var(--rv-colors-warm-coral); font-size: 3rem; }
+.people-section { padding: 24px 0 48px; }
+.people-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.people-card { border: 1px solid var(--rv-border); border-radius: var(--rv-radius-card); overflow: hidden; background: var(--rv-surface); }
+.people-card > div:last-child { padding: 24px; }
+.people-card p:last-child { margin-bottom: 0; }
+.admin-welcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px; align-items: center; min-height: 100vh; padding-block: 48px; }
+.admin-welcome-copy { min-width: 0; }
 .service-section { padding: 48px 0; }
 .service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
 .service-card { display: flex; flex-direction: column; align-items: flex-start; }
@@ -72,6 +81,6 @@ th { color: var(--rv-secondary-text); font-size: .75rem; text-transform: upperca
 .filters { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 20px 0; }
 .filters label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 @media(max-width: 1000px) { .service-grid, .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .admin-shell { grid-template-columns: 180px minmax(0,1fr); } .dashboard-grid { grid-template-columns: 1fr; } .hero { gap: 24px; } }
-@media(max-width: 700px) { .hero { grid-template-columns: 1fr; padding: 40px 0; } .hero-scene { min-height: 320px; padding: 24px; } .site-nav { gap: 16px; } .admin-shell { display: block; } .sidebar { padding: 16px; border-right: 0; border-bottom: 1px solid var(--rv-border); } .sidebar nav { display: flex; overflow-x: auto; margin-top: 16px; } .sidebar button { flex-shrink: 0; } .admin-main { padding: 24px 16px; } .service-grid { grid-template-columns: 1fr; } .theme-control > span { display: none; } }
+@media(max-width: 700px) { .hero, .admin-welcome { grid-template-columns: 1fr; padding-block: 40px; gap: 24px; } .people-grid { grid-template-columns: 1fr; } .site-nav { gap: 16px; } .admin-shell { display: block; } .sidebar { padding: 16px; border-right: 0; border-bottom: 1px solid var(--rv-border); } .sidebar nav { display: flex; overflow-x: auto; margin-top: 16px; } .sidebar button { flex-shrink: 0; } .admin-main { padding: 24px 16px; } .service-grid { grid-template-columns: 1fr; } .theme-control > span { display: none; } }
 @media(max-width: 380px) { .kpis { grid-template-columns: 1fr; } .container { width: calc(100% - 32px); } }
 @media(prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }

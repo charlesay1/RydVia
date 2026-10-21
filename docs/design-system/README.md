@@ -21,7 +21,10 @@ bottom sheets observe reduced-motion settings. Native OS-themed launch surfaces
 use token colors; manual-override cold starts still require device verification.
 
 Mobile welcomes are native widgets with flexible, keyboard-aware scrolling, not
-screenshots. They use color panels until approved lifestyle photography arrives.
+screenshots. Their shared photographic surface preserves the 3:2 campaign frame,
+uses bounded decode sizes and has an icon fallback. Captions and forms remain on
+solid surfaces. Generated campaign candidates await final brand/locality approval;
+see `assets/photography/manifest.json` and `docs/design-system/VISUAL_ASSET_AUDIT.md`.
 Phone selectors alone show the Ghana flag. Service tiles use one consistent Material
 outlined icon family. Product roles share styling and differ through labels/content.
 
